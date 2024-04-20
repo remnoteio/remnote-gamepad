@@ -17,6 +17,24 @@ function GamepadInput() {
 	const [isLookback, setIsLookback] = useState(false);
 	const plugin = usePlugin();
 
+	const startGamepadInputListener = () => {
+		const interval = setInterval(() => {
+			const gamepads = navigator.getGamepads();
+			const gamepad = gamepads[gamepadIndex.current];
+			if (gamepad) {
+				gamepad.buttons.forEach((button, index) => {
+					if (!button.pressed && prevButtonStates.current[index]) {
+						setButtonIndex(index);
+						setButtonReleased(true);
+					}
+					prevButtonStates.current[index] = button.pressed;
+				});
+			}
+		}, 1);
+
+		return () => clearInterval(interval);
+	};
+
 	useAPIEventListener(AppEvents.QueueLoadCard, undefined, async (e) => {
 		setTimeout(async () => {
 			const lookback = await plugin.queue.inLookbackMode();
@@ -26,7 +44,6 @@ function GamepadInput() {
 
 	useEffect(() => {
 		const handleGamepadConnected = (event: { gamepad: { index: number } }) => {
-			console.log('Gamepad connected:', event.gamepad.index);
 			if (event.gamepad.mapping !== 'standard') {
 				console.warn('Gamepad mapping is not standard. Please use a standard mapping.'); //TODO: SUPPORT NON-STANDARD MAPPINGS
 			}
@@ -42,27 +59,6 @@ function GamepadInput() {
 		};
 	}, []);
 
-	const startGamepadInputListener = () => {
-		const interval = setInterval(() => {
-			const gamepads = navigator.getGamepads();
-			const gamepad = gamepads[gamepadIndex.current];
-			if (gamepad) {
-				gamepad.buttons.forEach((button, index) => {
-					// If the button is not pressed and the previous state was pressed
-					if (!button.pressed && prevButtonStates.current[index]) {
-						setButtonIndex(index);
-						setButtonReleased(true);
-					}
-					// Update the previous button state
-					prevButtonStates.current[index] = button.pressed;
-				});
-			}
-		}, 1);
-
-		return () => clearInterval(interval);
-	};
-
-	// use effect to listen for when the button is released
 	useEffect(() => {
 		if (buttonReleased) {
 			console.log('Button released:', buttonIndex);
@@ -94,4 +90,5 @@ function GamepadInput() {
 
 	return <div></div>;
 }
+
 renderWidget(GamepadInput);

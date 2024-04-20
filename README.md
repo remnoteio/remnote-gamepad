@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="https://raw.githubusercontent.com/coldenate/remnote-gamepad-controller/main/public/logo.svg" alt="Citationista Logo" height="300px">
+	<img src="https://raw.githubusercontent.com/coldenate/remnote-gamepad-controller/main/public/logo.svg" alt="RGC Logo" height="300px">
 </h1>
 
 <h3 align="center">

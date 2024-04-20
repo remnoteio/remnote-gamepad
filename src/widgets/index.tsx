@@ -6,54 +6,10 @@ import {
 	RNPlugin,
 	WidgetLocation,
 } from '@remnote/plugin-sdk';
-import {
-	buttonMapping,
-	buttonToScoreMapping,
-	buttonLabels,
-	dryButtonMapping,
-} from './funcs/buttonMapping';
-function addButtonMapping(score: QueueInteractionScore, buttonIndex: number) {
-	// Add the button index to the array of indices for the given score
-	buttonMapping[score].push(buttonIndex);
-
-	// Update the button to score mapping
-	buttonToScoreMapping[buttonIndex] = score;
-}
-
-function removeButtonMapping(score: QueueInteractionScore, buttonIndex: number) {
-	// Remove the button index from the array of indices for the given score
-	buttonMapping[score] = buttonMapping[score].filter((index) => index !== buttonIndex);
-
-	// Update the button to score mapping
-	delete buttonToScoreMapping[buttonIndex];
-}
-
-function changeButtonMapping(
-	oldScore: QueueInteractionScore,
-	newScore: QueueInteractionScore,
-	buttonIndex: number
-) {
-	// Remove the button index from the array of indices for the old score
-	buttonMapping[oldScore] = buttonMapping[oldScore].filter((index) => index !== buttonIndex);
-
-	// Add the button index to the array of indices for the new score
-	buttonMapping[newScore].push(buttonIndex);
-
-	// Update the button to score mapping
-	buttonToScoreMapping[buttonIndex] = newScore;
-}
-
-function toTitleCase(str: string): string {
-	return str
-		.toLowerCase()
-		.split('_')
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
-}
+import { buttonToScoreMapping, buttonLabels, dryButtonMapping } from './funcs/buttonMapping';
+import { changeButtonMapping } from './funcs/changeButtonMapping';
 
 async function onActivate(plugin: ReactRNPlugin) {
-	// settings
-
 	await plugin.settings.registerBooleanSetting({
 		id: 'debug-mode',
 		title: 'Debug Mode',
@@ -62,8 +18,7 @@ async function onActivate(plugin: ReactRNPlugin) {
 	});
 
 	for (const [buttonIndex, buttonLabel] of Object.entries(buttonLabels)) {
-		// lookup what the buttonIndex is premapped to, and then use that to find the QueueInteractionScore.
-		const rawScore = QueueInteractionScore[dryButtonMapping[parseInt(buttonIndex)]]; // NOTE THIS SKIPS 8
+		const rawScore = QueueInteractionScore[dryButtonMapping[parseInt(buttonIndex)]];
 		const score = rawScore ? rawScore.toLowerCase() : undefined;
 		if (!score) {
 			continue;
@@ -115,7 +70,6 @@ async function onActivate(plugin: ReactRNPlugin) {
 		});
 	}
 
-	// commands
 	plugin.track(async (reactivePlugin) => {
 		await isDebugMode(reactivePlugin).then(async (debugMode) => {
 			if (debugMode) {
@@ -131,7 +85,7 @@ async function onActivate(plugin: ReactRNPlugin) {
 				});
 			}
 		});
-		// edit the button mappings IF the user changes them
+		// This edits the button mapping settings - if the user modified them.
 		for (const [buttonIndex, buttonLabel] of Object.entries(buttonLabels)) {
 			const buttonMappingSetting = `button-mapping-${buttonLabel}`;
 			const oldScore = buttonToScoreMapping[parseInt(buttonIndex)];
@@ -141,7 +95,9 @@ async function onActivate(plugin: ReactRNPlugin) {
 			}
 		}
 	});
+
 	await plugin.app.registerWidget('gamepadInput', WidgetLocation.QueueToolbar, {
+		// @ts-ignore
 		dimensions: { height: '0px', width: '0px' },
 	});
 }

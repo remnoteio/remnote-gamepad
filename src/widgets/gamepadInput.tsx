@@ -43,7 +43,12 @@ function GamepadInput() {
 	});
 
 	useEffect(() => {
-		const handleGamepadConnected = (event: { gamepad: { index: number } }) => {
+		const handleGamepadConnected = (event: {
+			gamepad: {
+				mapping: string;
+				index: number;
+			};
+		}) => {
 			if (event.gamepad.mapping !== 'standard') {
 				console.warn('Gamepad mapping is not standard. Please use a standard mapping.'); //TODO: SUPPORT NON-STANDARD MAPPINGS
 			}

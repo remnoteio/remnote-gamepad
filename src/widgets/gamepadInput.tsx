@@ -1,19 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import {
 	AppEvents,
-	PageType,
 	QueueInteractionScore,
-	RNPlugin,
-	WidgetLocation,
 	renderWidget,
 	useAPIEventListener,
 	usePlugin,
-	useRunAsync,
-	useTracker,
 } from '@remnote/plugin-sdk';
-import React from 'react';
 import { buttonToScoreMapping } from './funcs/buttonMapping';
-// import './../App.css';
 
 function GamepadInput() {
 	const gamepadIndex = useRef(-1);
@@ -83,6 +76,7 @@ function GamepadInput() {
 
 			if (!showedAnswer && !isLookback) {
 				console.log('showing answer');
+				// TODO: SHOW that hover display as if they hovered over the answer
 				setShowedAnswer(true);
 				plugin.queue.showAnswer();
 				return;
@@ -98,27 +92,6 @@ function GamepadInput() {
 		}
 	}, [buttonReleased, buttonIndex]);
 
-	return (
-		<div>
-			<br />
-			Life can be like that sometimes, but you'll get through it.
-			<br />
-			Sometimes you just need to take a break and come back to it later.
-			<br />
-			Or maybe you need to take a break and never come back to it.
-			<br />
-			But you'll figure it out.
-			<br />
-			You always do.
-			<br />
-			And if you don't, that's okay too.
-			<br />
-			You're doing your best, and that's enough.
-			<br />
-			You're enough.
-			<br />
-			Think big.
-		</div>
-	);
+	return <div></div>;
 }
 renderWidget(GamepadInput);

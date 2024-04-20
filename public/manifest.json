@@ -1,25 +1,24 @@
 {
 	"manifestVersion": 1,
-	"id": "plugin-id",
-	"name": "Plugin Name",
-	"author": "Your Name",
+	"id": "gamepad",
+	"name": "Gamepad in Queue",
+	"author": "coldenate",
 	"repoUrl": "https://github.com/coldenate/remnote-gamepad",
 	"supportUrl": "https://github.com/coldenate/remnote-gamepad",
 	"projectUrl": "https://github.com/coldenate/remnote-gamepad",
-	"changeLogUrl": "optional. can be a change log website you made for your plugin.",
 	"version": {
 		"major": 0,
-		"minor": 0,
-		"patch": 1
+		"minor": 1,
+		"patch": 0
 	},
 	"theme": [],
 	"enableOnMobile": true,
-	"description": "Have a good description!",
+	"description": "Connect your favorite game controller and use it in your Flashcard Queue!",
 	"requestNative": true,
 	"requiredScopes": [
 		{
 			"type": "All",
-			"level": "ReadCreateModify"
+			"level": "Read"
 		}
 	]
 }

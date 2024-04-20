@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
 	AppEvents,
 	PageType,
+	QueueInteractionScore,
 	RNPlugin,
 	WidgetLocation,
 	renderWidget,
@@ -11,28 +12,22 @@ import {
 	useTracker,
 } from '@remnote/plugin-sdk';
 import React from 'react';
-import { buttonToScoreMapping } from '.';
+import { buttonToScoreMapping } from './funcs/buttonMapping';
 // import './../App.css';
 
 function GamepadInput() {
-	console.log('rendered');
 	const gamepadIndex = useRef(-1);
 	const [buttonReleased, setButtonReleased] = useState(false);
 	const [buttonIndex, setButtonIndex] = useState(-1);
 	const prevButtonStates = useRef<Array<boolean>>([]);
 	const [showedAnswer, setShowedAnswer] = useState(false);
+	const [isLookback, setIsLookback] = useState(false);
 	const plugin = usePlugin();
 
-	const [cardId, setCardId] = React.useState<string | null>(null);
-	useTracker(async () => {
-		const ctx = await plugin.widget.getWidgetContext<WidgetLocation.QueueToolbar>();
-		setCardId(ctx?.cardId || null);
-	}, []);
-
-	useAPIEventListener(AppEvents.QueueCompleteCard, undefined, async (e) => {
+	useAPIEventListener(AppEvents.QueueLoadCard, undefined, async (e) => {
 		setTimeout(async () => {
-			const ctx = await plugin.widget.getWidgetContext<WidgetLocation.QueueToolbar>();
-			setCardId(ctx?.cardId || null);
+			const lookback = await plugin.queue.inLookbackMode();
+			setIsLookback(lookback || false);
 		}, 100);
 	});
 
@@ -81,7 +76,12 @@ function GamepadInput() {
 			setButtonReleased(false);
 			// TODO: handle if we need to change the UI examples to something
 			// TODO: IDEA: Since the user can't directly see what they press, let's do a cool, space like flash around the border of the screen representing the color of the button they pressed.
-			if (!showedAnswer) {
+
+			if (buttonIndex === 9) {
+				// TODO: here, we handle lookback mode
+			}
+
+			if (!showedAnswer && !isLookback) {
 				console.log('showing answer');
 				setShowedAnswer(true);
 				plugin.queue.showAnswer();
@@ -90,7 +90,10 @@ function GamepadInput() {
 			if (showedAnswer) {
 				console.log('rating card', buttonToScoreMapping[buttonIndex]);
 				setShowedAnswer(false);
-				plugin.queue.rateCurrentCard(buttonToScoreMapping[buttonIndex]);
+				plugin.app.toast(
+					`Rated card as ${QueueInteractionScore[buttonToScoreMapping[buttonIndex]]}`
+				);
+				plugin.queue.rateCurrentCard(Number(buttonToScoreMapping[buttonIndex]));
 			}
 		}
 	}, [buttonReleased, buttonIndex]);

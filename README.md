@@ -42,7 +42,3 @@ Found a bug or want to suggest a feature? Please open an issue on our [GitHub Is
 > If you're reporting a bug, please include as much information as possible to help us reproduce the bug. I love detailed bug reports!
 
 ---
-
-<p align="center">
-	📆 Copyright &copy; 2023 <a href="https://github.com/coldenate" target="_blank">Nathan Solis</a>
-</p>

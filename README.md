@@ -30,10 +30,6 @@ Have an idea for a new feature? [Contribute](CONTRIBUTING.md) to RGC development
 
 ### FAQ
 
-## 🚧 Work in Progress
-
-RGC is currently a personal side project and a work in progress. Any feedback/contribution is greatly appreciated, but please understand that it's a hobby project without any strict timelines or commitments. If you have an issue with the plugin, please make a GitHub issue.
-
 ## 🐛 Bugs and Issues
 
 Found a bug or want to suggest a feature? Please open an issue on our [GitHub Issues](https://github.com/coldenate/remnote-gamepad-controller/issues) page. Your feedback is invaluable!

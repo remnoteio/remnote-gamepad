@@ -4,10 +4,17 @@ import {
 	QueueInteractionScore,
 	ReactRNPlugin,
 	RNPlugin,
+	useOnMessageBroadcast,
 	WidgetLocation,
 } from '@remnote/plugin-sdk';
-import { buttonToScoreMapping, buttonLabels, dryButtonMapping } from './funcs/buttonMapping';
+import {
+	buttonToScoreMapping,
+	buttonLabels,
+	dryButtonMapping,
+	getButtonsFromGroup,
+} from './funcs/buttonMapping';
 import { changeButtonMapping } from './funcs/changeButtonMapping';
+import { getResponseButtonUIforGCButtonPressed as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
 
 async function onActivate(plugin: ReactRNPlugin) {
 	await plugin.settings.registerBooleanSetting({
@@ -100,6 +107,29 @@ async function onActivate(plugin: ReactRNPlugin) {
 		// @ts-ignore
 		dimensions: { height: '0px', width: '0px' },
 	});
+
+	plugin.event.addListener(AppEvents.MessageBroadcast, undefined, async (message) => {
+		if (message.message.changeButtonCSS === undefined || message.message.changeButtonCSS === null) {
+			await plugin.app.registerCSS('hoverButton', '');
+		}
+
+		if (message.message.buttonGroup) {
+			const oldGroup = await plugin.storage.getSession('buttonGroup');
+			if (oldGroup === message.message.buttonGroup) {
+				return;
+			}
+			await plugin.storage.setSession('buttonGroup', message.message.buttonGroup);
+		}
+
+		if (message.message.changeButtonCSS !== undefined && message.message.changeButtonCSS !== null) {
+			const changeButtonCSS = Number(message.message.changeButtonCSS);
+			await plugin.app.registerCSS('hoverButton', '');
+			await plugin.app.registerCSS(
+				'hoverButton',
+				`.${getButtonClassName(changeButtonCSS)} { background: var(--rn-clr-background--hovered) !important;}`
+			);
+		}
+	});
 }
 async function isDebugMode(reactivePlugin: RNPlugin): Promise<boolean> {
 	return await reactivePlugin.settings.getSetting('debug-mode');
@@ -108,3 +138,7 @@ async function isDebugMode(reactivePlugin: RNPlugin): Promise<boolean> {
 async function onDeactivate(_: ReactRNPlugin) {}
 
 declareIndexPlugin(onActivate, onDeactivate);
+
+function getButtonUIDisplaySVG(buttonIndex: number) {
+	return '';
+}

@@ -35,3 +35,34 @@ for (const [score, indices] of Object.entries(buttonMapping)) {
 	}
 }
 export const dryButtonMapping: ButtonToScoreMapping = buttonToScoreMapping;
+
+export function getButtonGroup(buttonIndex: number) {
+	if (buttonIndex === 6 || buttonIndex === 7) {
+		return 'trigger';
+	} else if (buttonIndex === 4 || buttonIndex === 5) {
+		return 'bumper';
+	} else if (buttonIndex === 12 || buttonIndex === 13 || buttonIndex === 14 || buttonIndex === 15) {
+		return 'd-pad';
+	} else if (buttonIndex === 0 || buttonIndex === 1 || buttonIndex === 2 || buttonIndex === 3) {
+		return 'face button';
+	} else if (buttonIndex === 8) {
+		return 'start/select';
+	}
+}
+
+export function getButtonsFromGroup(group: string): number[] {
+	switch (group) {
+		case 'trigger':
+			return [6, 7];
+		case 'bumper':
+			return [4, 5];
+		case 'd-pad':
+			return [12, 13, 14, 15];
+		case 'face button':
+			return [0, 1, 2, 3];
+		case 'start/select':
+			return [8];
+		default:
+			return [];
+	}
+}

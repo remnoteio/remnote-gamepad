@@ -14,7 +14,7 @@
 	"theme": [],
 	"enableOnMobile": true,
 	"description": "Connect your favorite game controller and use it in your Flashcard Queue!",
-	"requestNative": true,
+	"requestNative": false,
 	"requiredScopes": [
 		{
 			"type": "All",

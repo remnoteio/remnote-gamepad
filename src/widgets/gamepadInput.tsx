@@ -9,7 +9,6 @@ import {
 import { buttonToScoreMapping, getButtonGroup } from './funcs/buttonMapping';
 
 function GamepadInput() {
-	// TODO: sometimes, the user can click for us, show the answer for us, but still use the gamepad to rate the card. we need to handle this case
 	const gamepadIndex = useRef(-1);
 	const [buttonReleased, setButtonReleased] = useState(false);
 	const [buttonPressed, setButtonPressed] = useState(false);
@@ -18,6 +17,14 @@ function GamepadInput() {
 	const [showedAnswer, setShowedAnswer] = useState(false);
 	const [isLookback, setIsLookback] = useState(false);
 	const plugin = usePlugin();
+
+	// check if the queue has revelaed the answer or not
+	useEffect(() => {
+		const runAsync = async () => {
+			setShowedAnswer(await plugin.queue.hasRevealedAnswer());
+		};
+		runAsync();
+	}, []);
 
 	const startGamepadInputListener = () => {
 		const interval = setInterval(() => {
@@ -55,7 +62,7 @@ function GamepadInput() {
 			};
 		}) => {
 			if (event.gamepad.mapping !== 'standard') {
-				console.warn('Gamepad mapping is not standard. Please use a standard mapping.'); //TODO: SUPPORT NON-STANDARD MAPPINGS
+				plugin.app.toast('Gamepad mapping is not standard. Please use a standard mapping.');
 			}
 			gamepadIndex.current = event.gamepad.index;
 			startGamepadInputListener();
@@ -98,14 +105,14 @@ function GamepadInput() {
 	// Handle lookback mode
 	useEffect(() => {
 		if (buttonReleased && buttonIndex === 9) {
-			// TODO: here, we handle lookback mode
+			plugin.queue.goBackToPreviousCard();
 		}
 	}, [buttonReleased]);
 
 	// Show answer
 	useEffect(() => {
 		if (buttonReleased && !showedAnswer && !isLookback) {
-			setShowedAnswer(true);
+			// setShowedAnswer(true);
 			plugin.queue.showAnswer();
 		}
 	}, [buttonReleased, showedAnswer, isLookback]);
@@ -113,7 +120,7 @@ function GamepadInput() {
 	useEffect(() => {
 		if (buttonReleased && showedAnswer) {
 			plugin.messaging.broadcast({ changeButtonCSS: null });
-			setShowedAnswer(false);
+			// setShowedAnswer(false);
 			plugin.queue.rateCurrentCard(Number(buttonToScoreMapping[buttonIndex]));
 		}
 	}, [buttonReleased, showedAnswer]);

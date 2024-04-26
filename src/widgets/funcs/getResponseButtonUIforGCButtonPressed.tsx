@@ -4,8 +4,8 @@ export function getResponseButtonUIforGCButtonPressed(buttonIndex: number): stri
 	return `rn-queue__answer-btn--${mapButtonNameToWord(buttonIndex)}`;
 }
 
-function mapButtonNameToWord(buttonName: number) {
-	switch (buttonName) {
+function mapButtonNameToWord(QueueIntScore: number) {
+	switch (QueueIntScore) {
 		case QueueInteractionScore.AGAIN:
 			return 'forgotten';
 		case QueueInteractionScore.EASY:

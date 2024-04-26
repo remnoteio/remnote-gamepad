@@ -6,25 +6,24 @@ import {
 	useAPIEventListener,
 	usePlugin,
 } from '@remnote/plugin-sdk';
-import { buttonToScoreMapping, getButtonGroup } from './funcs/buttonMapping';
+import {
+	QueueInteraction,
+	buttonToAction,
+	getButtonAction,
+	getButtonGroup,
+} from './funcs/buttonMapping';
 
 function GamepadInput() {
 	const gamepadIndex = useRef(-1);
 	const [buttonReleased, setButtonReleased] = useState(false);
 	const [buttonPressed, setButtonPressed] = useState(false);
 	const [buttonIndex, setButtonIndex] = useState(-1);
+	const [queueActionToTake, setQueueActionToTake] = useState<QueueInteraction | undefined>(
+		undefined
+	);
 	const prevButtonStates = useRef<Array<boolean>>([]);
-	const [showedAnswer, setShowedAnswer] = useState(false);
 	const [isLookback, setIsLookback] = useState(false);
 	const plugin = usePlugin();
-
-	// check if the queue has revelaed the answer or not
-	useEffect(() => {
-		const runAsync = async () => {
-			setShowedAnswer(await plugin.queue.hasRevealedAnswer());
-		};
-		runAsync();
-	}, []);
 
 	const startGamepadInputListener = () => {
 		const interval = setInterval(() => {
@@ -55,6 +54,18 @@ function GamepadInput() {
 	});
 
 	useEffect(() => {
+		if (buttonIndex === -1) {
+			return;
+		}
+		const tmp = getButtonAction(buttonIndex);
+		if (tmp === undefined) {
+			plugin.app.toast('⚠️ Unbound button. Please bind the button to an action in the settings.');
+			return;
+		}
+		setQueueActionToTake(tmp);
+	}, [buttonIndex]);
+
+	useEffect(() => {
 		const handleGamepadConnected = (event: {
 			gamepad: {
 				mapping: string;
@@ -66,7 +77,6 @@ function GamepadInput() {
 			}
 			gamepadIndex.current = event.gamepad.index;
 			startGamepadInputListener();
-			// TODO: set up UI examples
 		};
 
 		window.addEventListener('gamepadconnected', handleGamepadConnected);
@@ -85,13 +95,22 @@ function GamepadInput() {
 		}
 	}, [buttonPressed]);
 
+	// Helper function to check if answer has been revealed
+	const hasRevealedAnswer = async () => {
+		return await plugin.queue.hasRevealedAnswer();
+	};
+
+	// Handle button press event
 	// handle button press and the answer is shown
 	useEffect(() => {
-		if (buttonPressed && showedAnswer) {
-			const className = Number(buttonToScoreMapping[buttonIndex]);
-			plugin.messaging.broadcast({ changeButtonCSS: className });
-		}
-	}, [buttonPressed, showedAnswer]);
+		const handleButtonPress = async () => {
+			if (buttonPressed && (await hasRevealedAnswer())) {
+				const className = Number(buttonToAction[buttonIndex]);
+				plugin.messaging.broadcast({ changeButtonCSS: className });
+			}
+		};
+		handleButtonPress();
+	}, [buttonPressed]);
 
 	// Handle button release event
 	useEffect(() => {
@@ -104,27 +123,31 @@ function GamepadInput() {
 
 	// Handle lookback mode
 	useEffect(() => {
-		if (buttonReleased && buttonIndex === 9) {
+		if (buttonReleased && queueActionToTake === QueueInteraction.goBackToPreviousCard) {
 			plugin.queue.goBackToPreviousCard();
 		}
 	}, [buttonReleased]);
 
 	// Show answer
 	useEffect(() => {
-		if (buttonReleased && !showedAnswer && !isLookback) {
-			// setShowedAnswer(true);
-			plugin.queue.showAnswer();
-		}
-	}, [buttonReleased, showedAnswer, isLookback]);
+		const showAnswer = async () => {
+			if (buttonReleased && !(await hasRevealedAnswer()) && !isLookback) {
+				plugin.queue.showAnswer();
+			}
+		};
+		showAnswer();
+	}, [buttonReleased, isLookback]);
 
+	// Rate current card
 	useEffect(() => {
-		if (buttonReleased && showedAnswer) {
-			plugin.messaging.broadcast({ changeButtonCSS: null });
-			// setShowedAnswer(false);
-			plugin.queue.rateCurrentCard(Number(buttonToScoreMapping[buttonIndex]));
-		}
-	}, [buttonReleased, showedAnswer]);
-
+		const rateCard = async () => {
+			if (buttonReleased && (await hasRevealedAnswer())) {
+				plugin.messaging.broadcast({ changeButtonCSS: null });
+				plugin.queue.rateCurrentCard(Number(buttonToAction[buttonIndex]));
+			}
+		};
+		rateCard();
+	}, [buttonReleased]);
 	return <div></div>;
 }
 

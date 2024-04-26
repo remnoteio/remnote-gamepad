@@ -14,6 +14,8 @@ import {
 	getButtonsFromGroup,
 	QueueInteraction,
 	QueueInteractionPrettyName,
+	ButtonGroup,
+	buttonGroupCssPatterns,
 } from './funcs/buttonMapping';
 import { changeButtonMapping } from './funcs/changeButtonMapping';
 import { getResponseButtonUIforGCButtonPressed as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
@@ -96,6 +98,13 @@ async function onActivate(plugin: ReactRNPlugin) {
 				return;
 			}
 			await plugin.storage.setSession('buttonGroup', message.message.buttonGroup);
+			// Get the CSS pattern for the current button group
+			const cssPattern = buttonGroupCssPatterns[message.message.buttonGroup as ButtonGroup];
+
+			// Apply the CSS pattern
+			if (cssPattern) {
+				await plugin.app.registerCSS('buttonGroupCSS', cssPattern);
+			}
 		}
 
 		if (message.message.changeButtonCSS !== undefined && message.message.changeButtonCSS !== null) {
@@ -115,7 +124,3 @@ async function isDebugMode(reactivePlugin: RNPlugin): Promise<boolean> {
 async function onDeactivate(_: ReactRNPlugin) {}
 
 declareIndexPlugin(onActivate, onDeactivate);
-
-function getButtonUIDisplaySVG(buttonIndex: number) {
-	return '';
-}

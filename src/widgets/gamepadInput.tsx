@@ -117,7 +117,6 @@ function GamepadInput() {
 		if (buttonReleased) {
 			console.log('Button released:', buttonIndex);
 			setButtonReleased(false);
-			// TODO: handle if we need to change the UI examples to something
 		}
 	}, [buttonReleased]);
 

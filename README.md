@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="https://raw.githubusercontent.com/coldenate/remnote-gamepad/main/assets/logo.svg" alt="RGC Logo" height="300px">
+	<img src="https://raw.githubusercontent.com/remnoteio/remnote-gamepad/main/assets/logo.svg" alt="RGC Logo" height="300px">
 </h1>
 
 <h3 align="center">
@@ -7,13 +7,13 @@
 </h3>
 
 <p align="center">
-	<a href="https://github.com/coldenate/remnote-gamepad/stargazers"><img src="https://img.shields.io/github/stars/coldenate/remnote-gamepad?colorA=363a4f&colorB=b7bdf8&style=for-the-badge" alt="GitHub Stars"></a>
-	<a href="https://github.com/coldenate/remnote-gamepad/issues"><img src="https://img.shields.io/github/issues/coldenate/remnote-gamepad?colorA=363a4f&colorB=f5a97f&style=for-the-badge" alt="GitHub Issues"></a>
-	<a href="https://github.com/coldenate/remnote-gamepad/contributors"><img src="https://img.shields.io/github/contributors/coldenate/remnote-gamepad?colorA=363a4f&colorB=a6da95&style=for-the-badge" alt="GitHub Contributors"></a>
+	<a href="https://github.com/remnoteio/remnote-gamepad/stargazers"><img src="https://img.shields.io/github/stars/remnoteio/remnote-gamepad?colorA=FFFFFF&colorB=506CF7&style=for-the-badge" alt="GitHub Stars"></a>
+	<a href="https://github.com/remnoteio/remnote-gamepad/issues"><img src="https://img.shields.io/github/issues/remnoteio/remnote-gamepad?colorA=FFFFFF&colorB=506CF7&style=for-the-badge" alt="GitHub Issues"></a>
+	<a href="https://github.com/remnoteio/remnote-gamepad/contributors"><img src="https://img.shields.io/github/contributors/remnoteio/remnote-gamepad?colorA=FFFFFF&colorB=506CF7&style=for-the-badge" alt="GitHub Contributors"></a>
 </p>
 
 <!-- <p align="center">
-	<img src="https://raw.githubusercontent.com/coldenate/remnote-gamepad/main/.github/remnote-preview.gif" alt="RGC in Action">
+	<img src="https://raw.githubusercontent.com/remnoteio/remnote-gamepad/main/.github/remnote-preview.gif" alt="RGC in Action">
 </p> -->
 
 ## 👾 Overview
@@ -52,7 +52,7 @@ Each queue interaction is mapped to one or more buttons:
 2. Select the button you want to assign a Queue Interaction to
 3. Go back to studying and enjoy your new button mapping!
 
-![Customizing Button Mappings](https://raw.githubusercontent.com/coldenate/remnote-gamepad/main/assets/customizing-button-mappings.gif)
+![Customizing Button Mappings](https://raw.githubusercontent.com/remnoteio/remnote-gamepad/main/assets/customizing-button-mappings.gif)
 _Theme used: [Catppuccin](https://remnote.com/plugins/catppuccin)_
 
 (better method coming soon! for now, head to `Plugin Settings` to manually configure)
@@ -93,7 +93,7 @@ If your controller isn't working with RGC, please open an issue. See the [Bugs a
 
 ## 🐛 Bugs and Issues
 
-Found a bug or want to suggest a feature? Please open an issue on our [GitHub Issues](https://github.com/coldenate/remnote-gamepad/issues) page. Your feedback is invaluable!
+Found a bug or want to suggest a feature? Please open an issue on our [GitHub Issues](https://github.com/remnoteio/remnote-gamepad/issues) page. Your feedback is invaluable!
 
 > [!NOTE]
 > If you're reporting a bug, please include as much information as possible to help us reproduce the bug. I love detailed bug reports!

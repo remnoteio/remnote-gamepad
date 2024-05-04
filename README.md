@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="https://raw.githubusercontent.com/coldenate/remnote-gamepad-controller/main/public/logo.svg" alt="RGC Logo" height="300px">
+	<img src="https://raw.githubusercontent.com/coldenate/remnote-gamepad-controller/main/assets/logo.svg" alt="RGC Logo" height="300px">
 </h1>
 
 <h3 align="center">
@@ -24,8 +24,8 @@ RemNote Gamepad Controller (RGC) is a RemNote Plugin that allows you to connect 
 
 - [ ] Controller Profiles for different controllers (e.g. You can have a profile for your Joycon (R) and another for your 8BitDo SN30 Pro)
   - [ ] Support for Nintendo Switch Joycons (L/R, as pair or individually)
-  - [ ] Button Binding UI
 - [ ] Indicator for when controller is connected
+- ~~Better Button Binding UI~~ (cancelled - don't have the energy to implement this right now. If you find this is a priority, please let me know!)
 
 Have an idea for a new feature? [Contribute](CONTRIBUTING.md) to RGC development!
 
@@ -33,9 +33,29 @@ Have an idea for a new feature? [Contribute](CONTRIBUTING.md) to RGC development
 
 ### Predefined Button Mappings
 
+Each queue interaction is mapped to one or more buttons:
+| Queue Interaction | Button Binding Slot 1 | Button Binding Slot 2 | Button Binding Slot 3 |
+|--------------------------|-----------------------|-----------------------|-----------------------|
+| Answer Card As Again | North Button (Y) | North D-Pad | Left Trigger |
+| Answer Card As Easy | South Button (A) | South D-Pad | Right Trigger |
+| Answer Card As Good | East Button (B) | East D-Pad | Right Bumper |
+| Answer Card As Hard | West Button (X) | West D-Pad | Left Bumper |
+| Answer Card As Too Early | Start Button | | |
+| Go Back To Previous Card | Select Button | | |
+
+> [!NOTE]
+> In parentheses are the buttons on an Xbox controller. For other controllers, please refer to the controller's button layout.
+
 ### Customizing Button Mappings
 
-(coming soon! for now, head to `Plugin Settings` to manually configure)
+1. Open Plugin Settings and navigate to `Gamepad Queue Controller`
+2. Select the button you want to assign a Queue Interaction to
+3. Go back to studying and enjoy your new button mapping!
+
+![Customizing Button Mappings](https://raw.githubusercontent.com/coldenate/remnote-gamepad-controller/main/assets/customizing-button-mappings.gif)
+_Theme used: [Catppuccin](https://remnote.com/plugins/catppuccin)_
+
+(better method coming soon! for now, head to `Plugin Settings` to manually configure)
 
 ### FAQ
 

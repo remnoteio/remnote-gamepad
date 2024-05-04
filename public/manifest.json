@@ -1,7 +1,7 @@
 {
 	"manifestVersion": 1,
 	"id": "gamepad",
-	"name": "Gamepad in Queue",
+	"name": "Gamepad Queue Controller",
 	"author": "coldenate",
 	"repoUrl": "https://github.com/coldenate/remnote-gamepad",
 	"supportUrl": "https://github.com/coldenate/remnote-gamepad",

@@ -67,47 +67,35 @@ export function getButtonAction(buttonIndex: number): QueueInteraction | undefin
 }
 
 export enum ButtonGroup {
-	trigger = 'trigger',
-	bumper = 'bumper',
+	triggerBumper = 'trigger/bumper',
 	dPad = 'd-pad',
 	faceButton = 'face button',
-	startSelect = 'start/select',
+	// startSelect = 'start/select',
 }
 
-export const buttonGroupCssPatterns = {
-	// TODO: Add CSS patterns for each button group
-	[ButtonGroup.trigger]: '/* CSS pattern for trigger button group */',
-	[ButtonGroup.bumper]: '/* CSS pattern for bumper button group */',
-	[ButtonGroup.dPad]: '/* CSS pattern for d-pad button group */',
-	[ButtonGroup.faceButton]: '/* CSS pattern for face button group */',
-	[ButtonGroup.startSelect]: '/* CSS pattern for start/select button group */',
-};
 export function getButtonGroup(buttonIndex: number): ButtonGroup | undefined {
-	if (buttonIndex === 6 || buttonIndex === 7) {
-		return ButtonGroup.trigger;
-	} else if (buttonIndex === 4 || buttonIndex === 5) {
-		return ButtonGroup.bumper;
+	if (buttonIndex === 4 || buttonIndex === 5 || buttonIndex === 6 || buttonIndex === 7) {
+		return ButtonGroup.triggerBumper;
 	} else if (buttonIndex === 12 || buttonIndex === 13 || buttonIndex === 14 || buttonIndex === 15) {
 		return ButtonGroup.dPad;
 	} else if (buttonIndex === 0 || buttonIndex === 1 || buttonIndex === 2 || buttonIndex === 3) {
 		return ButtonGroup.faceButton;
-	} else if (buttonIndex === 8 || buttonIndex === 9) {
-		return ButtonGroup.startSelect;
 	}
+	// } else if (buttonIndex === 8 || buttonIndex === 9) {
+	//     return ButtonGroup.startSelect;
+	// }
 }
 
 export function getButtonsFromGroup(group: ButtonGroup): number[] {
 	switch (group) {
-		case ButtonGroup.trigger:
-			return [6, 7];
-		case ButtonGroup.bumper:
-			return [4, 5];
+		case ButtonGroup.triggerBumper:
+			return [4, 5, 6, 7];
 		case ButtonGroup.dPad:
 			return [12, 13, 14, 15];
 		case ButtonGroup.faceButton:
 			return [0, 1, 2, 3];
-		case ButtonGroup.startSelect:
-			return [8, 9];
+		// case ButtonGroup.startSelect:
+		// 	return [8, 9];
 		default:
 			return [];
 	}

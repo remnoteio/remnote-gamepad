@@ -15,10 +15,17 @@ import {
 	QueueInteraction,
 	QueueInteractionPrettyName,
 	ButtonGroup,
-	buttonGroupCssPatterns,
 } from './funcs/buttonMapping';
 import { changeButtonMapping } from './funcs/changeButtonMapping';
 import { getResponseButtonUIforGCButtonPressed as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
+
+export const QueueInteractionCSSClassName = {
+	[QueueInteraction.answerCardAsAgain]: 'rn-queue-press-tooltip-forgot',
+	[QueueInteraction.answerCardAsEasy]: 'rn-queue-press-tooltip-remembered',
+	[QueueInteraction.answerCardAsGood]: 'rn-queue-press-tooltip-recalled-with-effort',
+	[QueueInteraction.answerCardAsHard]: 'rn-queue-press-tooltip-partially-recalled',
+	[QueueInteraction.answerCardAsTooEarly]: 'rn-queue-press-tooltip-skip',
+};
 
 async function onActivate(plugin: ReactRNPlugin) {
 	await plugin.settings.registerBooleanSetting({
@@ -99,7 +106,34 @@ async function onActivate(plugin: ReactRNPlugin) {
 			}
 			await plugin.storage.setSession('buttonGroup', message.message.buttonGroup);
 			// Get the CSS pattern for the current button group
-			const cssPattern = buttonGroupCssPatterns[message.message.buttonGroup as ButtonGroup];
+			const buttonGroup = message.message.buttonGroup as ButtonGroup;
+
+			// we're going to return the css pattern for all the response buttons.
+			// the css will be populated with the mapping information we will get
+			// (to find the css class, use the QueueInteractionCSSClassName object)
+			// in the css class we find, do ::after { content: " ${buttonLabel}"; } (but show all the possible labels)
+
+			let cssPattern = '';
+			const buttons = getButtonsFromGroup(buttonGroup);
+			for (const button of buttons) {
+				const buttonLabel = buttonLabels[button];
+				const buttonAction = buttonToAction[button];
+				const cssClass = QueueInteractionCSSClassName[buttonAction];
+				cssPattern += `
+					.${cssClass}::after {
+						content: " | On your Gamepad: ${buttonLabel}";
+					}
+				`;
+			}
+			// manually add the user's bindings for the start and select buttons
+			cssPattern += `
+				[data-cy-label="Back"] .rn-text-paragraph-medium::after {
+    content: " | On your Gamepad: Start Button";
+}
+				.${QueueInteractionCSSClassName[QueueInteraction.answerCardAsTooEarly]}::after {
+					content: " | On your Gamepad: Select Button";
+				}
+			`;
 
 			// Apply the CSS pattern
 			if (cssPattern) {

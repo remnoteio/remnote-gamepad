@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
 	AppEvents,
 	QueueInteractionScore,
+	RNPlugin,
 	renderWidget,
 	useAPIEventListener,
 	usePlugin,
@@ -12,6 +13,7 @@ import {
 	getButtonAction,
 	getButtonGroup,
 } from './funcs/buttonMapping';
+import { LogType, logMessage } from './funcs/logging';
 
 function GamepadInput() {
 	const gamepadIndex = useRef(-1);
@@ -54,6 +56,8 @@ function GamepadInput() {
 	});
 
 	useEffect(() => {
+		logMessage(plugin, `Button index: ${buttonIndex}`, LogType.Info, false);
+
 		if (buttonIndex === -1) {
 			return;
 		}
@@ -89,7 +93,7 @@ function GamepadInput() {
 	// Handle button press event
 	useEffect(() => {
 		if (buttonPressed) {
-			console.log('Button pressed:', buttonIndex);
+			logMessage(plugin, `Button pressed: ${buttonIndex}`, LogType.Info, false);
 			setButtonPressed(false);
 			plugin.messaging.broadcast({ buttonGroup: getButtonGroup(buttonIndex) });
 		}
@@ -115,7 +119,7 @@ function GamepadInput() {
 	// Handle button release event
 	useEffect(() => {
 		if (buttonReleased) {
-			console.log('Button released:', buttonIndex);
+			logMessage(plugin, `Button released: ${buttonIndex}`, LogType.Info, false);
 			setButtonReleased(false);
 		}
 	}, [buttonReleased]);
@@ -141,6 +145,12 @@ function GamepadInput() {
 	useEffect(() => {
 		const rateCard = async () => {
 			if (buttonReleased && (await hasRevealedAnswer())) {
+				logMessage(
+					plugin,
+					`Rating card as ${Number(buttonToAction[buttonIndex])}`,
+					LogType.Info,
+					false
+				);
 				plugin.messaging.broadcast({ changeButtonCSS: null });
 				plugin.queue.rateCurrentCard(Number(buttonToAction[buttonIndex]));
 			}

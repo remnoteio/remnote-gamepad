@@ -36,12 +36,12 @@ Have an idea for a new feature? [Contribute](CONTRIBUTING.md) to RGC development
 Each queue interaction is mapped to one or more buttons:
 | Queue Interaction | Button Binding Slot 1 | Button Binding Slot 2 | Button Binding Slot 3 |
 |--------------------------|-----------------------|-----------------------|-----------------------|
-| Answer Card As Again | North Button (Y) | North D-Pad | Left Trigger |
-| Answer Card As Easy | South Button (A) | South D-Pad | Right Trigger |
-| Answer Card As Good | East Button (B) | East D-Pad | Right Bumper |
-| Answer Card As Hard | West Button (X) | West D-Pad | Left Bumper |
-| Answer Card As Too Early | Start Button | | |
-| Go Back To Previous Card | Select Button | | |
+| Forgot | North Button (Y) | North D-Pad | Left Trigger |
+| Easily Recalled | South Button (A) | South D-Pad | Right Trigger |
+| Recalled with Effort | East Button (B) | East D-Pad | Right Bumper |
+| Partially Recalled | West Button (X) | West D-Pad | Left Bumper |
+| Skip | Start Button | | |
+| Back | Select Button | | |
 
 > [!NOTE]
 > In parentheses are the buttons on an Xbox controller. For other controllers, please refer to the controller's button layout.

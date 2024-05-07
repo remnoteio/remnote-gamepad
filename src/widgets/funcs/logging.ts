@@ -41,7 +41,7 @@ export async function logMessage(
 	plugin: ReactRNPlugin | RNPlugin,
 	message: any[] | string,
 	type: LogType,
-	isToast: boolean,
+	isToast: boolean = true,
 	params?: any
 ) {
 	const debugMode = await plugin.settings.getSetting('debug-mode');

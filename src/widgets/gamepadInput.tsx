@@ -7,12 +7,7 @@ import {
 	useAPIEventListener,
 	usePlugin,
 } from '@remnote/plugin-sdk';
-import {
-	QueueInteraction,
-	buttonToAction,
-	getButtonAction,
-	getButtonGroup,
-} from './funcs/buttonMapping';
+import { ControllerMapping, DEFAULT_MAPPING, QueueInteraction } from './funcs/buttonMapping';
 import { LogType, logMessage } from './funcs/logging';
 
 function GamepadInput() {
@@ -26,7 +21,17 @@ function GamepadInput() {
 	const prevButtonStates = useRef<Array<boolean>>([]);
 	const [isLookback, setIsLookback] = useState(false);
 	const plugin = usePlugin();
+	const [controllerMapping, setControllerMapping] = useState<ControllerMapping>(DEFAULT_MAPPING);
 
+	useEffect(() => {
+		const fetchControllerMapping = async () => {
+			const mapping = (await plugin.storage.getSynced('controllerMapping')) as ControllerMapping;
+			logMessage(plugin, `Fetched controller mapping: `, LogType.Info, false, mapping);
+			setControllerMapping(mapping || DEFAULT_MAPPING);
+		};
+
+		fetchControllerMapping();
+	}, []);
 	const startGamepadInputListener = () => {
 		const interval = setInterval(() => {
 			const gamepads = navigator.getGamepads();
@@ -61,7 +66,7 @@ function GamepadInput() {
 		if (buttonIndex === -1) {
 			return;
 		}
-		const tmp = getButtonAction(buttonIndex);
+		const tmp = getButtonAction(buttonIndex, controllerMapping);
 		if (tmp === undefined) {
 			plugin.app.toast('⚠️ Unbound button. Please bind the button to an action in the settings.');
 			return;
@@ -95,7 +100,7 @@ function GamepadInput() {
 		if (buttonPressed) {
 			logMessage(plugin, `Button pressed: ${buttonIndex}`, LogType.Info, false);
 			setButtonPressed(false);
-			plugin.messaging.broadcast({ buttonGroup: getButtonGroup(buttonIndex) });
+			plugin.messaging.broadcast({ buttonGroup: getButtonGroup(buttonIndex, controllerMapping) });
 		}
 	}, [buttonPressed]);
 
@@ -109,7 +114,7 @@ function GamepadInput() {
 	useEffect(() => {
 		const handleButtonPress = async () => {
 			if (buttonPressed && (await hasRevealedAnswer())) {
-				const className = Number(buttonToAction[buttonIndex]);
+				const className = getActionFromButton(buttonIndex, controllerMapping);
 				plugin.messaging.broadcast({ changeButtonCSS: className });
 			}
 		};
@@ -121,13 +126,6 @@ function GamepadInput() {
 		if (buttonReleased) {
 			logMessage(plugin, `Button released: ${buttonIndex}`, LogType.Info, false);
 			setButtonReleased(false);
-		}
-	}, [buttonReleased]);
-
-	// Handle lookback mode
-	useEffect(() => {
-		if (buttonReleased && queueActionToTake === QueueInteraction.goBackToPreviousCard) {
-			plugin.queue.goBackToPreviousCard();
 		}
 	}, [buttonReleased]);
 
@@ -143,16 +141,20 @@ function GamepadInput() {
 
 	// Rate current card
 	useEffect(() => {
+		if (buttonReleased && queueActionToTake === QueueInteraction.goBackToPreviousCard) {
+			plugin.queue.goBackToPreviousCard();
+			return;
+		}
 		const rateCard = async () => {
 			if (buttonReleased && (await hasRevealedAnswer())) {
 				logMessage(
 					plugin,
-					`Rating card as ${Number(buttonToAction[buttonIndex])}`,
+					`Rating card as ${getActionFromButton(buttonIndex, controllerMapping)}`,
 					LogType.Info,
 					false
 				);
 				plugin.messaging.broadcast({ changeButtonCSS: null });
-				plugin.queue.rateCurrentCard(Number(buttonToAction[buttonIndex]));
+				plugin.queue.rateCurrentCard(getActionFromButton(buttonIndex, controllerMapping));
 			}
 		};
 		rateCard();
@@ -161,3 +163,15 @@ function GamepadInput() {
 }
 
 renderWidget(GamepadInput);
+
+function getButtonAction(buttonIndex: number, controllerMapping: ControllerMapping) {
+	return controllerMapping.find((mapping) => mapping.buttonIndex === buttonIndex)?.queueInteraction;
+}
+
+function getButtonGroup(buttonIndex: number, controllerMapping: ControllerMapping) {
+	return controllerMapping.find((mapping) => mapping.buttonIndex === buttonIndex)?.buttonGroup;
+}
+
+function getActionFromButton(buttonIndex: number, controllerMapping: ControllerMapping): any {
+	return controllerMapping.find((mapping) => mapping.buttonIndex === buttonIndex)?.queueInteraction;
+}

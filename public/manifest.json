@@ -1,19 +1,19 @@
 {
 	"manifestVersion": 1,
 	"id": "gamepad",
-	"name": "Gamepad Queue Controller",
+	"name": "Flashcard Controller Support",
 	"author": "coldenate",
 	"repoUrl": "https://github.com/coldenate/remnote-gamepad",
 	"supportUrl": "https://github.com/coldenate/remnote-gamepad",
 	"projectUrl": "https://github.com/coldenate/remnote-gamepad",
 	"version": {
 		"major": 0,
-		"minor": 2,
+		"minor": 3,
 		"patch": 0
 	},
 	"theme": [],
 	"enableOnMobile": true,
-	"description": "Connect your favorite game controller and use it in your Flashcard Queue!",
+	"description": "Connect your favorite gamepad controller and use it in your Flashcard Queue!",
 	"requestNative": false,
 	"requiredScopes": [
 		{

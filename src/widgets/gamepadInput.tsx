@@ -9,6 +9,7 @@ import {
 } from '@remnote/plugin-sdk';
 import { ControllerMapping, DEFAULT_MAPPING, QueueInteraction } from './funcs/buttonMapping';
 import { LogType, logMessage } from './funcs/logging';
+import { checkNonCardSlide } from './funcs/checkNonCardSlide';
 
 function GamepadInput() {
 	const gamepadIndex = useRef(-1);
@@ -22,6 +23,7 @@ function GamepadInput() {
 	const [isLookback, setIsLookback] = useState(false);
 	const plugin = usePlugin();
 	const [controllerMapping, setControllerMapping] = useState<ControllerMapping>(DEFAULT_MAPPING);
+	const [isNonCardSlide, setIsCardSlide] = useState(false);
 
 	useEffect(() => {
 		const fetchControllerMapping = async () => {
@@ -29,7 +31,6 @@ function GamepadInput() {
 			logMessage(plugin, `Fetched controller mapping: `, LogType.Info, false, mapping);
 			setControllerMapping(mapping || DEFAULT_MAPPING);
 		};
-
 		fetchControllerMapping();
 	}, []);
 	const startGamepadInputListener = () => {
@@ -53,12 +54,28 @@ function GamepadInput() {
 		return () => clearInterval(interval);
 	};
 
+	const fetchCardSlide = async () => {
+		const cardSlide = await plugin.queue.getCurrentQueueScreenType();
+		if (cardSlide === undefined) {
+			return;
+		}
+		setIsCardSlide(checkNonCardSlide(cardSlide!));
+	};
+
+	const fetchLookback = async () => {
+		const lookback = await plugin.queue.inLookbackMode();
+		setIsLookback(lookback || false);
+	};
+
 	useAPIEventListener(AppEvents.QueueLoadCard, undefined, async (e) => {
-		setTimeout(async () => {
-			const lookback = await plugin.queue.inLookbackMode();
-			setIsLookback(lookback || false);
-		}, 100);
+		fetchCardSlide();
+		setTimeout(fetchLookback, 100);
 	});
+
+	useEffect(() => {
+		fetchCardSlide();
+		setTimeout(fetchLookback, 100);
+	}, []); // Empty dependency array to run only on first mount
 
 	useEffect(() => {
 		logMessage(plugin, `Button index: ${buttonIndex}`, LogType.Info, false);
@@ -95,6 +112,11 @@ function GamepadInput() {
 		};
 	}, []);
 
+	// Helper function to check if answer has been revealed
+	const hasRevealedAnswer = async () => {
+		return await plugin.queue.hasRevealedAnswer();
+	};
+
 	// Handle button press event
 	useEffect(() => {
 		if (buttonPressed) {
@@ -103,13 +125,6 @@ function GamepadInput() {
 			plugin.messaging.broadcast({ buttonGroup: getButtonGroup(buttonIndex, controllerMapping) });
 		}
 	}, [buttonPressed]);
-
-	// Helper function to check if answer has been revealed
-	const hasRevealedAnswer = async () => {
-		return await plugin.queue.hasRevealedAnswer();
-	};
-
-	// Handle button press event
 	// handle button press and the answer is shown
 	useEffect(() => {
 		const handleButtonPress = async () => {
@@ -132,12 +147,12 @@ function GamepadInput() {
 	// Show answer
 	useEffect(() => {
 		const showAnswer = async () => {
-			if (buttonReleased && !(await hasRevealedAnswer()) && !isLookback) {
+			if (buttonReleased && !(await hasRevealedAnswer()) && !isLookback && !isNonCardSlide) {
 				plugin.queue.showAnswer();
 			}
 		};
 		showAnswer();
-	}, [buttonReleased, isLookback]);
+	}, [buttonReleased, isLookback, isNonCardSlide]);
 
 	// Rate current card
 	useEffect(() => {
@@ -146,19 +161,19 @@ function GamepadInput() {
 			return;
 		}
 		const rateCard = async () => {
-			if (buttonReleased && (await hasRevealedAnswer())) {
+			if (buttonReleased && ((await hasRevealedAnswer()) || isNonCardSlide)) {
 				logMessage(
 					plugin,
 					`Rating card as ${getActionFromButton(buttonIndex, controllerMapping)}`,
 					LogType.Info,
 					false
 				);
-				plugin.messaging.broadcast({ changeButtonCSS: null });
 				plugin.queue.rateCurrentCard(getActionFromButton(buttonIndex, controllerMapping));
 			}
 		};
+		plugin.messaging.broadcast({ changeButtonCSS: null });
 		rateCard();
-	}, [buttonReleased]);
+	}, [buttonReleased, isNonCardSlide]);
 	return <div></div>;
 }
 

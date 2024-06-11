@@ -34,14 +34,15 @@ Have an idea for a new feature? [Contribute](CONTRIBUTING.md) to RGC development
 ### Predefined Button Mappings
 
 Each queue interaction is mapped to one or more buttons:
-| Queue Interaction | Button Binding Slot 1 | Button Binding Slot 2 | Button Binding Slot 3 |
-|--------------------------|-----------------------|-----------------------|-----------------------|
-| Forgot | North Button (Y) | North D-Pad | Left Trigger |
-| Easily Recalled | South Button (A) | South D-Pad | Right Trigger |
-| Recalled with Effort | East Button (B) | East D-Pad | Right Bumper |
-| Partially Recalled | West Button (X) | West D-Pad | Left Bumper |
-| Skip | Start Button | | |
-| Back | Select Button | | |
+
+| Action               | Slot 1           | Slot 2      | Slot 3        |
+| -------------------- | ---------------- | ----------- | ------------- |
+| Forgot               | North Button (Y) | North D-Pad | Left Trigger  |
+| Easily Recalled      | South Button (A) | South D-Pad | Right Trigger |
+| Recalled with Effort | East Button (B)  | East D-Pad  | Right Bumper  |
+| Partially Recalled   | West Button (X)  | West D-Pad  | Left Bumper   |
+| Skip                 | Start Button     |             |               |
+| Back                 | Select Button    |             |               |
 
 > [!NOTE]
 > In parentheses are the buttons on an Xbox controller. For other controllers, please refer to the controller's button layout.

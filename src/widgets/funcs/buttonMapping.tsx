@@ -1,6 +1,7 @@
 import { QueueInteractionScore, RNPlugin } from '@remnote/plugin-sdk';
 import { LogType, logMessage } from './logging';
 
+// Enum for Queue Interactions
 export enum QueueInteraction {
 	hideAnswer = 'hideAnswer',
 	goBackToPreviousCard = 'goBackToPreviousCard',
@@ -13,7 +14,7 @@ export enum QueueInteraction {
 	resetCard = QueueInteractionScore.RESET,
 }
 
-export const QueueInteractionPrettyName = {
+export const QueueInteractionPrettyName: Record<QueueInteraction, string> = {
 	[QueueInteraction.hideAnswer]: 'Hide Answer',
 	[QueueInteraction.goBackToPreviousCard]: 'Go Back To Previous Card',
 	[QueueInteraction.answerCardAsAgain]: 'Answer Card As Again',
@@ -25,22 +26,23 @@ export const QueueInteractionPrettyName = {
 	[QueueInteraction.resetCard]: 'Reset Card',
 };
 
+// Enum for Button Groups
 export enum ButtonGroup {
 	triggerBumper = 'trigger/bumper',
 	dPad = 'd-pad',
 	faceButton = 'face button',
-	// startSelect = 'start/select',
 }
 
-export type ButtonMapping = {
+export interface ButtonMapping {
 	buttonIndex: number;
 	queueInteraction: QueueInteraction;
 	buttonGroup: ButtonGroup;
 	buttonLabel: string;
-};
+}
 
 export type ControllerMapping = ButtonMapping[];
 
+// Default Mapping
 export const DEFAULT_MAPPING: ControllerMapping = [
 	{
 		buttonIndex: 3,
@@ -134,6 +136,23 @@ export function getPossibleButtonsFromGroup(buttonGroup: ButtonGroup): number[] 
 	);
 }
 
+// Logging Function
+function logMappingChange(
+	plugin: RNPlugin,
+	buttonLabel: string,
+	newQueueInteraction: QueueInteraction,
+	oldQueueInteraction: QueueInteraction
+) {
+	logMessage(
+		plugin,
+		`Button mapping for ${buttonLabel} has been changed to ${QueueInteractionPrettyName[newQueueInteraction]}`,
+		LogType.Info,
+		false,
+		`| Default was: ${QueueInteractionPrettyName[oldQueueInteraction]}`
+	);
+}
+
+// Write Settings to Synced Mapping
 export async function writeSettingsToSyncedMapping(plugin: RNPlugin) {
 	const controllerMapping: ControllerMapping = [];
 
@@ -153,42 +172,41 @@ export async function writeSettingsToSyncedMapping(plugin: RNPlugin) {
 			continue;
 		}
 
-		// queueInteraction will usually be a string because of the dropdown setting. but because every now and then it might be a number that is a string we need to check for that.. HOWEVER, If it is a string that is just a number, we want to convert tht to a number
-		const queueInteractionBird =
-			typeof queueInteraction === 'string'
-				? isNaN(Number(queueInteraction))
-					? queueInteraction
-					: Number(queueInteraction)
-				: queueInteraction;
-		if (queueInteraction) {
-			controllerMapping.push({
-				buttonIndex: button.buttonIndex,
-				queueInteraction: queueInteractionBird, // the only thing we are actually changeing
-				buttonGroup: button.buttonGroup,
-				buttonLabel: button.buttonLabel,
-			});
+		// Ensuring queueInteractionParsed is of type QueueInteraction
+		let queueInteractionParsed: QueueInteraction;
+		if (typeof queueInteraction === 'string' && !isNaN(Number(queueInteraction))) {
+			queueInteractionParsed = Number(queueInteraction) as QueueInteraction;
+		} else {
+			queueInteractionParsed = queueInteraction as QueueInteraction;
 		}
-	}
 
-	if (controllerMapping != DEFAULT_MAPPING) {
-		// look through and see which ones are different. If they are different, then we need log what changed. for each change, logMessage(plugin, `Button mapping for ${button.buttonLabel} has been changed to ${queueInteraction}`, LogType.Info, false);
-
-		const changedMappings = controllerMapping.filter(
-			(mapping) =>
-				DEFAULT_MAPPING.find((defaultMapping) => defaultMapping.buttonIndex === mapping.buttonIndex)
-					?.queueInteraction !== mapping.queueInteraction
-		);
-
-		changedMappings.forEach((mapping) => {
-			logMessage(
-				plugin,
-				`Button mapping for ${mapping.buttonLabel} has been changed to ${QueueInteractionPrettyName[mapping.queueInteraction]}`,
-				LogType.Info,
-				false,
-				`| Defualt is normally: ${QueueInteractionPrettyName[DEFAULT_MAPPING.find((defaultMapping) => defaultMapping.buttonIndex === mapping.buttonIndex)?.queueInteraction]}`
-			);
+		controllerMapping.push({
+			buttonIndex: button.buttonIndex,
+			queueInteraction: queueInteractionParsed,
+			buttonGroup: button.buttonGroup,
+			buttonLabel: button.buttonLabel,
 		});
 	}
+
+	const changedMappings = controllerMapping.filter(
+		(mapping) =>
+			DEFAULT_MAPPING.find((defaultMapping) => defaultMapping.buttonIndex === mapping.buttonIndex)
+				?.queueInteraction !== mapping.queueInteraction
+	);
+
+	changedMappings.forEach((mapping) => {
+		const defaultMapping = DEFAULT_MAPPING.find(
+			(defaultMapping) => defaultMapping.buttonIndex === mapping.buttonIndex
+		);
+		if (defaultMapping) {
+			logMappingChange(
+				plugin,
+				mapping.buttonLabel,
+				mapping.queueInteraction,
+				defaultMapping.queueInteraction
+			);
+		}
+	});
 
 	await plugin.storage.setSynced('controllerMapping', controllerMapping);
 }

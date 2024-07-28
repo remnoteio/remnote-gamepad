@@ -57,9 +57,7 @@ async function onActivate(plugin: ReactRNPlugin) {
 		await plugin.settings.registerDropdownSetting({
 			id: `button-mapping-${button.buttonLabel}`,
 			title: `Button Mapping for ${button.buttonLabel}`,
-			defaultValue: DEFAULT_MAPPING.find(
-				(mapping) => mapping.buttonIndex === button.buttonIndex
-			)?.queueInteraction?.toString(),
+			defaultValue: button.queueInteraction.toString(),
 			description: `Change the response for the ${button.buttonLabel}.`,
 			options: options,
 		});
@@ -117,6 +115,19 @@ async function onActivate(plugin: ReactRNPlugin) {
 	await plugin.app.registerWidget('gamepadInput', WidgetLocation.QueueToolbar, {
 		// @ts-ignore
 		dimensions: { height: '0px', width: '0px' },
+	});
+
+	await plugin.app.registerWidget('settingsUI', WidgetLocation.Popup, {
+		dimensions: { height: 'auto', width: '80vw' },
+	});
+
+	await plugin.app.registerCommand({
+		id: 'open-settings-ui',
+		name: 'Open Settings UI',
+		description: 'Open the settings UI for the button mappings',
+		action: async () => {
+			await plugin.widget.openPopup('settingsUI');
+		},
 	});
 
 	plugin.event.addListener(AppEvents.MessageBroadcast, undefined, async (message) => {

@@ -18,7 +18,7 @@ import {
 	ButtonMapping,
 } from './funcs/buttonMapping';
 import { getResponseButtonUIforGCButtonPressed as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
-import { logMessage, LogType } from './funcs/logging';
+import { getAllSessionLogs, logMessage, LogType } from './funcs/logging';
 
 export const QueueInteractionCSSClassName: Record<QueueInteraction, string> = {
 	[QueueInteraction.answerCardAsAgain]: 'rn-queue-press-tooltip-forgot',
@@ -97,6 +97,16 @@ async function onActivate(plugin: ReactRNPlugin) {
 					quickCode: 'debug write settings to synced mapping',
 					action: async () => {
 						await writeSettingsToSyncedMapping(reactivePlugin);
+					},
+				});
+				// copy logs to clipboard
+				await plugin.app.registerCommand({
+					id: 'copy-logs-to-clipboard',
+					name: 'Copy Logs to Clipboard',
+					description: 'Copy the logs to the clipboard',
+					quickCode: 'debug copy logs to clipboard',
+					action: async () => {
+						await getAllSessionLogs(plugin);
 					},
 				});
 			}

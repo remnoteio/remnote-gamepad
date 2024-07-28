@@ -46,6 +46,7 @@ export async function logMessage(
 ) {
 	const debugMode = await plugin.settings.getSetting('debug-mode');
 	if (debugMode) {
+		await addToSessionLogs(plugin, `${logTypeToEmoji[type].emoji} ${message}`);
 		const baseplateIdentifier = `${logTypeToEmoji[type].emoji}+🎮`;
 		const consoleEmitType = type.toLowerCase() as 'warn' | 'info' | 'error' | 'log';
 		switch (consoleEmitType) {
@@ -66,4 +67,24 @@ export async function logMessage(
 	if (isToast) {
 		await plugin.app.toast(`${logTypeToEmoji[type].emoji} ${message}`);
 	}
+}
+
+async function addToSessionLogs(plugin: RNPlugin, message: string) {
+	const sessionLogs = await plugin.storage.getSession('session-logs');
+	if (!sessionLogs) {
+		await plugin.storage.setSession('session-logs', [message]);
+		return;
+	}
+	sessionLogs.push(message);
+	await plugin.storage.setSession('session-logs', sessionLogs);
+}
+
+export async function getAllSessionLogs(plugin: RNPlugin) {
+	const sessionLogs = await plugin.storage.getSession('session-logs');
+	if (!sessionLogs) {
+		return [];
+	}
+	// open browser copy dialog
+	alert(sessionLogs.join('\n'));
+	return sessionLogs;
 }

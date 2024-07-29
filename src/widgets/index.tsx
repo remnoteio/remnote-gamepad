@@ -17,7 +17,7 @@ import {
 	ControllerMapping,
 	ButtonMapping,
 } from './funcs/buttonMapping';
-import { getResponseButtonUIforGCButtonPressed as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
+import { getResponseButtonUI as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
 import { getAllSessionLogs, logMessage, LogType } from './funcs/logging';
 
 export const QueueInteractionCSSClassName: Record<QueueInteraction, string> = {

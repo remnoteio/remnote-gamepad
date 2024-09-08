@@ -19,6 +19,7 @@ import {
 } from './funcs/buttonMapping';
 import { getResponseButtonUI as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
 import { getAllSessionLogs, logMessage, LogType } from './funcs/logging';
+import { useEffect } from 'react';
 
 export const QueueInteractionCSSClassName: Record<QueueInteraction, string> = {
 	[QueueInteraction.answerCardAsAgain]: 'rn-queue-press-tooltip-forgot',
@@ -47,21 +48,21 @@ async function onActivate(plugin: ReactRNPlugin) {
 		defaultValue: false,
 	});
 
-	for (const button of DEFAULT_MAPPING) {
-		const options = Object.entries(QueueInteractionPrettyName).map(([key, value]) => ({
-			key: key,
-			value: key,
-			label: value,
-		}));
+	// for (const button of DEFAULT_MAPPING) {
+	// 	const options = Object.entries(QueueInteractionPrettyName).map(([key, value]) => ({
+	// 		key: key,
+	// 		value: key,
+	// 		label: value,
+	// 	}));
 
-		await plugin.settings.registerDropdownSetting({
-			id: `button-mapping-${button.buttonLabel}`,
-			title: `Button Mapping for ${button.buttonLabel}`,
-			defaultValue: button.queueInteraction.toString(),
-			description: `Change the response for the ${button.buttonLabel}.`,
-			options: options,
-		});
-	}
+	// 	await plugin.settings.registerDropdownSetting({
+	// 		id: `button-mapping-${button.buttonLabel}`,
+	// 		title: `Button Mapping for ${button.buttonLabel}`,
+	// 		defaultValue: button.queueInteraction.toString(),
+	// 		description: `Change the response for the ${button.buttonLabel}.`,
+	// 		options: options,
+	// 	});
+	// }
 
 	plugin.track(async (reactivePlugin) => {
 		await isDebugMode(reactivePlugin).then(async (debugMode) => {
@@ -109,10 +110,10 @@ async function onActivate(plugin: ReactRNPlugin) {
 				});
 			}
 		});
-		await writeSettingsToSyncedMapping(reactivePlugin);
+		// await writeSettingsToSyncedMapping(reactivePlugin);
 	});
 
-	await plugin.app.registerWidget('gamepadInput', WidgetLocation.QueueToolbar, {
+	await plugin.app.registerWidget('gamePadQueueHandler', WidgetLocation.QueueToolbar, {
 		// @ts-ignore
 		dimensions: { height: '0px', width: '0px' },
 	});

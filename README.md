@@ -25,7 +25,7 @@ RemNote Gamepad Controller (RGC) is a RemNote Plugin that allows you to connect 
 - [ ] Controller Profiles for different controllers (e.g. You can have a profile for your Joycon (R) and another for your 8BitDo SN30 Pro)
   - [ ] Support for Nintendo Switch Joycons (L/R, as pair or individually)
 - [ ] Indicator for when controller is connected
-- ~~Better Button Binding UI~~ (cancelled - don't have the energy to implement this right now. If you find this is a priority, please let me know!)
+- [x] Button Binding UI
 
 Have an idea for a new feature? [Contribute](CONTRIBUTING.md) to RGC development!
 

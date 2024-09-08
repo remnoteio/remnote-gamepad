@@ -32,16 +32,16 @@ const logTypeToEmoji: LogTypeInfo = {
  * If isToast is true, it also displays the message as a toast.
  *
  * @param plugin - The ReactRNPlugin or RNPlugin instance.
- * @param message - The message to be logged.
  * @param type - The type of the log message.
  * @param isToast - Indicates whether to display the message as a toast. Default is false.
+ * @param message - The message to be logged.
  * @param params - Optional parameters.
  */
 export async function logMessage(
 	plugin: ReactRNPlugin | RNPlugin,
-	message: any[] | string,
 	type: LogType,
 	isToast: boolean = true,
+	message: any[] | string,
 	params?: any
 ) {
 	const debugMode = await plugin.settings.getSetting('debug-mode');

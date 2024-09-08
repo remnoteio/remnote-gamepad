@@ -145,11 +145,65 @@ function logMappingChange(
 ) {
 	logMessage(
 		plugin,
-		`Button mapping for ${buttonLabel} has been changed to ${QueueInteractionPrettyName[newQueueInteraction]}`,
 		LogType.Info,
 		false,
+		`Button mapping for ${buttonLabel} has been changed to ${QueueInteractionPrettyName[newQueueInteraction]}`,
 		`| Default was: ${QueueInteractionPrettyName[oldQueueInteraction]}`
 	);
+}
+
+// Delete or Swap Button Mapping for a Button (pass in the button we want to swap and the new interaction)
+// the function will delete the old mapping for the button and add the new mapping, and if we are asked to swap, it will swap the old mapping's interaction with the new one
+export async function deleteOrSwapButtonMapping(
+	plugin: RNPlugin,
+	buttonIndex: number,
+	newQueueInteraction: QueueInteraction,
+	swap: boolean
+) {
+	const controllerMapping = (await plugin.storage.getSynced(
+		'controllerMapping'
+	)) as ControllerMapping;
+
+	const oldMapping = controllerMapping.find((mapping) => mapping.buttonIndex === buttonIndex);
+
+	if (!oldMapping) {
+		logMessage(
+			plugin,
+			LogType.Warning,
+			false,
+			`Button mapping for button index ${buttonIndex} does not exist. Adding new mapping.`
+		);
+		controllerMapping.push({
+			buttonIndex,
+			queueInteraction: newQueueInteraction,
+			buttonGroup: DEFAULT_MAPPING.find((mapping) => mapping.buttonIndex === buttonIndex)
+				?.buttonGroup!,
+			buttonLabel: DEFAULT_MAPPING.find((mapping) => mapping.buttonIndex === buttonIndex)
+				?.buttonLabel!,
+		});
+	} else {
+		const oldQueueInteraction = oldMapping.queueInteraction;
+		if (swap) {
+			oldMapping.queueInteraction = newQueueInteraction;
+			logMappingChange(plugin, oldMapping.buttonLabel, newQueueInteraction, oldQueueInteraction);
+		} else {
+			controllerMapping.splice(
+				controllerMapping.findIndex((mapping) => mapping.buttonIndex === buttonIndex),
+				1
+			);
+			controllerMapping.push({
+				buttonIndex,
+				queueInteraction: newQueueInteraction,
+				buttonGroup: DEFAULT_MAPPING.find((mapping) => mapping.buttonIndex === buttonIndex)
+					?.buttonGroup!,
+				buttonLabel: DEFAULT_MAPPING.find((mapping) => mapping.buttonIndex === buttonIndex)
+					?.buttonLabel!,
+			});
+		}
+	}
+
+	await plugin.storage.setSynced('controllerMapping', controllerMapping);
+	plugin.messaging.broadcast({ type: 'controllerMappingUpdated' });
 }
 
 // Write Settings to Synced Mapping
@@ -164,9 +218,9 @@ export async function writeSettingsToSyncedMapping(plugin: RNPlugin) {
 		if (!queueInteraction) {
 			logMessage(
 				plugin,
-				`Button mapping for ${button.buttonLabel} is not set. Using default value.`,
 				LogType.Warning,
-				false
+				false,
+				`Button mapping for ${button.buttonLabel} is not set. Using default value.`
 			);
 			controllerMapping.push(button);
 			continue;
@@ -209,4 +263,5 @@ export async function writeSettingsToSyncedMapping(plugin: RNPlugin) {
 	});
 
 	await plugin.storage.setSynced('controllerMapping', controllerMapping);
+	plugin.messaging.broadcast({ type: 'controllerMappingUpdated' });
 }

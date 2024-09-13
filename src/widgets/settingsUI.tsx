@@ -53,7 +53,9 @@ function GamePadSettingsUI() {
 
 	return (
 		<div className="mx-auto p-4">
-			<h1 className="text-2xl font-bold mb-4">Button Mapping Editor</h1>
+			<h1 className="text-2xl font-bold mb-4">
+				Button Mapping Editor (Beta - Please leave feedback on GitHub!)
+			</h1>
 			<p className="mb-6">Customize your gamepad button mappings for various interactions.</p>
 
 			{feedback && <div className="bg-green-200 text-green-800 p-2 mb-4 rounded">{feedback}</div>}

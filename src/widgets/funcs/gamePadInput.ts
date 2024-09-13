@@ -12,7 +12,6 @@ function useGamepadInput() {
 	const prevButtonStates = useRef<Array<boolean>>([]);
 	const [releasedButtonIndex, setReleasedButtonIndex] = useState(-1);
 	const [controllerMapping, setControllerMapping] = useState<ControllerMapping>(DEFAULT_MAPPING);
-	
 
 	useEffect(() => {
 		const fetchControllerMapping = async () => {

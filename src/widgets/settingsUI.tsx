@@ -20,6 +20,19 @@ function GamePadSettingsUI() {
 		useGamepadInput();
 	const [waitingButton, setWaitingButton] = useState<QueueInteraction | null>(null);
 
+	// emit status of ui being shown or not
+	useEffect(() => {
+		const setSessionStatus = async (status: boolean) => {
+			await plugin.storage.setSession('settingsUiShown', status);
+		};
+		// announce that the UI is being shown
+		setSessionStatus(true);
+		return () => {
+			// announce that the UI is dismissed/destroyed
+			setSessionStatus(false);
+		};
+	}, []);
+
 	// Load mappings from plugin storage or use default mappings
 	useEffect(() => {
 		async function loadMappings() {

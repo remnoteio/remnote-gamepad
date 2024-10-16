@@ -27,6 +27,9 @@ function GamepadInput() {
 	);
 	const [isLookback, setIsLookback] = useState(false);
 	const [isNonCardSlide, setIsCardSlide] = useState(false);
+	const getSessionStatus = async () => {
+		return await plugin.storage.getSession('settingsUiShown');
+	};
 
 	useEffect(() => {
 		if (buttonIndex === -1) {
@@ -77,12 +80,18 @@ function GamepadInput() {
 	};
 
 	useEffect(() => {
+		getSessionStatus().then((status) => {
+			if (status) {
+				return;
+			}
+		});
 		const handleButtonPress = async () => {
 			if (buttonPressed && (await hasRevealedAnswer())) {
 				const className = getActionFromButton(buttonIndex, controllerMapping);
 				plugin.messaging.broadcast({ changeButtonCSS: className });
 			}
 		};
+
 		handleButtonPress();
 	}, [buttonPressed]);
 
@@ -96,6 +105,11 @@ function GamepadInput() {
 
 	// Show answer
 	useEffect(() => {
+		getSessionStatus().then((status) => {
+			if (status) {
+				return;
+			}
+		});
 		const showAnswer = async () => {
 			if (buttonReleased && !(await hasRevealedAnswer()) && !isLookback && !isNonCardSlide) {
 				plugin.queue.showAnswer();
@@ -106,6 +120,11 @@ function GamepadInput() {
 
 	// Rate current card
 	useEffect(() => {
+		getSessionStatus().then((status) => {
+			if (status) {
+				return;
+			}
+		});
 		if (buttonReleased && queueActionToTake === QueueInteraction.goBackToPreviousCard) {
 			plugin.queue.goBackToPreviousCard();
 			return;

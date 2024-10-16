@@ -43,7 +43,7 @@ async function onActivate(plugin: ReactRNPlugin) {
 
 	await plugin.settings.registerBooleanSetting({
 		id: 'debug-mode',
-		title: 'Debug Mode',
+		title: 'Debug Mode (Gamepad)',
 		description: 'Enables certain testing commands. Non-destructive.',
 		defaultValue: false,
 	});

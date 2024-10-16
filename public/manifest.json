@@ -1,15 +1,15 @@
 {
 	"manifestVersion": 1,
 	"id": "gamepad",
-	"name": "Flashcard Controller Support",
+	"name": "Gamepad Plugin | Flashcard Controller Support",
 	"author": "coldenate",
 	"repoUrl": "https://github.com/coldenate/remnote-gamepad",
 	"supportUrl": "https://github.com/coldenate/remnote-gamepad",
 	"projectUrl": "https://github.com/coldenate/remnote-gamepad",
 	"version": {
 		"major": 0,
-		"minor": 3,
-		"patch": 6
+		"minor": 4,
+		"patch": 0
 	},
 	"theme": [],
 	"enableOnMobile": true,

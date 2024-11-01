@@ -24,6 +24,7 @@ RemNote Gamepad Controller (RGC) is a RemNote Plugin that allows you to connect 
 
 - When editing controller mappings on top of the flashcard queue, the controller will still interact with the flashcard queue. To avoid this, please close the flashcard queue before editing controller mappings. (This will be fixed in a future update)
 - Queue does not work when plugin is loaded in Native Mode
+- AI "Why True", "Why False", etc. explanations still count as the same card, so if you press a button, it will change the rating. (This will be fixed in a future update). Please either disable this plugin when using that feature or disable the AI explanations in the settings.
 
 ## 📖 Documentation
 

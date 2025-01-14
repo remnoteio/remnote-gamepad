@@ -124,7 +124,7 @@ async function onActivate(plugin: ReactRNPlugin) {
 
 	await plugin.app.registerCommand({
 		id: 'open-settings-ui',
-		name: 'Open Settings UI',
+		name: 'Customize Controls (Gamepad)',
 		description: 'Open the settings UI for the button mappings',
 		action: async () => {
 			await plugin.widget.openPopup('settingsUI');

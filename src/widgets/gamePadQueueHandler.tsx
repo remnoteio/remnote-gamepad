@@ -27,6 +27,7 @@ function GamepadInput() {
 	);
 	const [isLookback, setIsLookback] = useState(false);
 	const [isNonCardSlide, setIsCardSlide] = useState(false);
+	const [isPracticeLaterPage, setIsPracticeLaterPage] = useState(false);
 	const getSessionStatus = async () => {
 		return await plugin.storage.getSession('settingsUiShown');
 	};
@@ -57,6 +58,7 @@ function GamepadInput() {
 			return;
 		}
 		setIsCardSlide(checkNonCardSlide(cardSlide!));
+		setIsPracticeLaterPage(cardSlide === 'PracticeLater');
 	};
 
 	const fetchLookback = async () => {
@@ -111,12 +113,12 @@ function GamepadInput() {
 			}
 		});
 		const showAnswer = async () => {
-			if (buttonReleased && !(await hasRevealedAnswer()) && !isLookback && !isNonCardSlide) {
+			if (buttonReleased && !(await hasRevealedAnswer()) && !isLookback && !isNonCardSlide && !isPracticeLaterPage) {
 				plugin.queue.showAnswer();
 			}
 		};
 		showAnswer();
-	}, [buttonReleased, isLookback, isNonCardSlide]);
+	}, [buttonReleased, isLookback, isNonCardSlide, isPracticeLaterPage]);
 
 	// Rate current card
 	useEffect(() => {
@@ -130,7 +132,7 @@ function GamepadInput() {
 			return;
 		}
 		const rateCard = async () => {
-			if (buttonReleased && ((await hasRevealedAnswer()) || isNonCardSlide)) {
+			if (buttonReleased && ((await hasRevealedAnswer()) || isNonCardSlide || isPracticeLaterPage)) {
 				logMessage(
 					plugin,
 					LogType.Info,
@@ -142,7 +144,7 @@ function GamepadInput() {
 		};
 		plugin.messaging.broadcast({ changeButtonCSS: null });
 		rateCard();
-	}, [buttonReleased, isNonCardSlide]);
+	}, [buttonReleased, isNonCardSlide, isPracticeLaterPage]);
 	return <div></div>;
 }
 

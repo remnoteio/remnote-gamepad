@@ -23,8 +23,8 @@ RemNote Gamepad Controller (RGC) is a RemNote Plugin that allows you to connect 
 ### ⚠️ Known Issues
 
 - When editing controller mappings on top of the flashcard queue, the controller will still interact with the flashcard queue. To avoid this, please close the flashcard queue before editing controller mappings. (This will be fixed in a future update)
-- Queue does not work when plugin is loaded in Native Mode
-- AI "Why True", "Why False", etc. explanations still count as the same card, so if you press a button, it will change the rating. (This will be fixed in a future update). Please either disable this plugin when using that feature or disable the AI explanations in the settings.
+- The queue does not work when the plugin is loaded in Native Mode
+- AI "Why True", "Why False", etc., explanations still count as the same card, so if you press a button, it will change the rating. (This will be fixed in a future update). Please either disable this plugin when using that feature or disable the AI explanations in the settings.
 
 ## 📖 Documentation
 
@@ -46,9 +46,9 @@ Each queue interaction is mapped to one or more buttons:
 
 ### Customizing Button Mappings
 
-1. Run `Customize Controls (Gamepad)` in the Command Palette
+1. Select `Customize Controls (Gamepad)` in the Omnibar (Ctrl+K)
 2. Select the button you want to assign a Queue Interaction to
-3. Press desired button on your controller
+3. Press the desired button on your controller
 4. Go back to studying and enjoy your new button mapping!
 
 ![Customizing Button Mappings](https://raw.githubusercontent.com/remnoteio/remnote-gamepad/main/.github/settings.gif)
@@ -83,17 +83,17 @@ For this, you can either:
 
 If your controller isn't working with RGC, please open an issue. See the [Bugs and Issues](#🐛-bugs-and-issues) section for more information.
 
-#### What happens if I come across a dog gif and have to press a non-queue button?!?! What ever will I do?
+#### What happens if I come across a dog gif and have to press a non-queue button?!?! Whatever will I do?
 
-RemNote will present you wil two buttons, one being the "primary" button (one with a colorful background-color) and the other being the "secondary" button (one with a white background-color). Whatever button you have bound to the "Easily Recalled" action will be the "primary" button, and the other will be the "secondary" button. Press the appropriate button to continue.
+RemNote will present you with two buttons, one being the "primary" button (one with a colorful background-color) and the other being the "secondary" button (one with a white background-color). Whatever button you have bound to the "Easily Recalled" action will be the "primary" button, and the other will be the "secondary" button. Press the appropriate button to continue.
 
 ![Primary and Secondary Buttons](https://raw.githubusercontent.com/remnoteio/remnote-gamepad/main/.github/menus.gif)
 
 ## 📅 Planned Features
 
 - [ ] Controller Profiles for different controllers (e.g. You can have a profile for your Joycon (R) and another for your 8BitDo SN30 Pro)
-  - [ ] Support for Nintendo Switch Joycons (L/R, as pair or individually)
-- [ ] Indicator for when controller is connected
+  - [ ] Support for Nintendo Switch Joycons (L/R, as a pair or individually)
+- [ ] Indicator for when the controller is connected
 - [x] Button Binding UI
 
 Have an idea for a new feature? [Contribute](CONTRIBUTING.md) to RGC development!

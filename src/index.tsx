@@ -7,19 +7,12 @@ import {
 	useOnMessageBroadcast,
 	WidgetLocation,
 } from '@remnote/plugin-sdk';
-import {
-	QueueInteraction,
-	QueueInteractionPrettyName,
-	ButtonGroup,
-	DEFAULT_MAPPING,
-	writeSettingsToSyncedMapping,
-	getPossibleButtonsFromGroup,
-	ControllerMapping,
-	ButtonMapping,
-} from './funcs/buttonMapping';
-import { getResponseButtonUI as getButtonClassName } from './funcs/getResponseButtonUIforGCButtonPressed';
-import { getAllSessionLogs, logMessage, LogType } from './funcs/logging';
+
 import { useEffect } from 'react';
+import { DEFAULT_MAPPING } from './config/defaultMappings';
+import { QueueInteraction, writeSettingsToSyncedMapping } from './services/buttonMapping';
+import { getAllSessionLogs } from './services/loggingService';
+import { getResponseButtonUI } from './utils/getResponseButtonUIforGCButtonPressed';
 
 export const QueueInteractionCSSClassName: Record<QueueInteraction, string> = {
 	[QueueInteraction.answerCardAsAgain]: 'rn-queue-press-tooltip-forgot',
@@ -189,7 +182,7 @@ async function onActivate(plugin: ReactRNPlugin) {
 			await plugin.app.registerCSS('hoverButton', '');
 			await plugin.app.registerCSS(
 				'hoverButton',
-				`.${getButtonClassName(changeButtonCSS)} { background: var(--rn-clr-background--hovered) !important;}`
+				`.${getResponseButtonUI(changeButtonCSS)} { background: var(--rn-clr-background--hovered) !important;}`
 			);
 		}
 	});

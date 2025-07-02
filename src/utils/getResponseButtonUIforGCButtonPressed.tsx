@@ -1,5 +1,5 @@
 import { QueueInteractionScore } from '@remnote/plugin-sdk';
-import { QueueInteraction } from './buttonMapping';
+import { QueueInteraction } from '../services/buttonMapping';
 
 export function getResponseButtonUI(buttonIndex: number): string {
 	return `rn-queue__answer-btn--${mapButtonNameToWord(buttonIndex)}`;

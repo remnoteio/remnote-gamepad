@@ -2,16 +2,24 @@ import { renderWidget, usePlugin } from '@remnote/plugin-sdk';
 import { useState, useEffect } from 'react';
 import {
 	ControllerMapping,
-	DEFAULT_MAPPING,
 	deleteOrSwapButtonMapping,
 	QueueInteraction,
 	QueueInteractionPrettyName,
-} from './funcs/buttonMapping';
-import { logMessage, LogType } from './funcs/logging';
-import { mapQueueInteractionToEmoji } from './funcs/getResponseButtonUIforGCButtonPressed';
-import useGamepadInput from './funcs/gamePadInput';
+} from '../services/buttonMapping';
+import { DEFAULT_MAPPING } from '../config/defaultMappings';
+import { logMessage, LogType } from '../services/loggingService';
+import { mapQueueInteractionToEmoji } from '../utils/getResponseButtonUIforGCButtonPressed';
+import useGamepadInput from '../hooks/useGamepadInput';
 
-function GamePadSettingsUI() {
+/**
+ * TODO:
+ * - Refactor UI layout for better organization
+ * - Extract sub-components for button mapping
+ * - Add tabs for different settings sections
+ * - Improve feedback mechanism
+ * - Consider adding gamepad visualization
+ */
+function SettingsPanel() {
 	const plugin = usePlugin();
 	// State to hold the current mappings
 	const [mappings, setMappings] = useState<ControllerMapping>([]);
@@ -55,7 +63,7 @@ function GamePadSettingsUI() {
 			}
 
 			logMessage(plugin, LogType.Info, false, 'Chosen Button:', buttonIndex);
-
+			
 			await deleteOrSwapButtonMapping(plugin, buttonIndex, waitingButton, false);
 
 			setWaitingButton(null);
@@ -118,7 +126,13 @@ function GamePadSettingsUI() {
 	);
 }
 
-renderWidget(GamePadSettingsUI);
+export default SettingsPanel;
+
+// For the widget rendering
+export function renderSettingsPanel() {
+	renderWidget(SettingsPanel);
+}
+
 export function convertKeyToQueueInteraction(key: string): QueueInteraction {
 	return isNaN(Number(key)) ? (key as QueueInteraction) : (Number(key) as QueueInteraction);
 }

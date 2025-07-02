@@ -5,11 +5,11 @@ import {
 	useAPIEventListener,
 	usePlugin,
 } from '@remnote/plugin-sdk';
-import { ControllerMapping, DEFAULT_MAPPING, QueueInteraction } from './funcs/buttonMapping';
-import { checkNonCardSlide } from './funcs/checkNonCardSlide';
-import { logMessage, LogType } from './funcs/logging';
+import { ControllerMapping, QueueInteraction } from '../services/buttonMapping';
+import { checkNonCardSlide } from '../utils/checkNonCardSlide';
 import { useEffect, useState } from 'react';
-import useGamepadInput from './funcs/gamePadInput';
+import useGamepadInput from '../hooks/useGamepadInput';
+import { logMessage, LogType } from '../services/loggingService';
 
 function GamepadInput() {
 	const plugin = usePlugin();
